@@ -1,37 +1,66 @@
+from enum import Enum
 import unittest
-from mars_rover import sum_numbers, next_state
+
+class Orientation(str, Enum):
+    NORTH = "N"
+    SOUTH = "S"
+    WEST = "W"
+    EAST = "E"
+    
+class Rotation(str, Enum):
+    RIGHT = "R"
+    LEFT = "L"
+
+class MarsRover:
+
+    def __init__(self, initial_orientation):
+        self.orientation = initial_orientation
+
+    def rotate(self, rotation):
+        match self.orientation:
+            case Orientation.NORTH:
+                if rotation == Rotation.LEFT:
+                    return Orientation.WEST
+                
+                elif rotation == Rotation.RIGHT:
+                    return Orientation.EAST
+            
+            case Orientation.WEST:
+                if rotation == Rotation.LEFT:
+                    return Orientation.SOUTH
+                
+                elif rotation == Rotation.RIGHT:
+                    return Orientation.NORTH
+                
+            case Orientation.EAST:
+                if rotation == Rotation.LEFT:
+                    return Orientation.NORTH
+                
+                elif rotation == Rotation.RIGHT:
+                    return Orientation.SOUTH
+            
+            case Orientation.SOUTH:
+                if rotation == Rotation.LEFT:
+                    return Orientation.EAST
+                
+                elif rotation == Rotation.RIGHT:
+                    return Orientation.WEST
+        
 
 class TestMarsRover(unittest.TestCase):
     
-    def test_north_turn_left(self):
-        self.assertEqual( next_state((1, 2, 'N'), 'L'  ), (1, 2, 'W') )
+    def test_rotate_left_from_north(self):
+        new_orientation = MarsRover(Orientation.NORTH).rotate(Rotation.LEFT)
+        self.assertEqual(new_orientation, Orientation.WEST)
+    
+    def test_rotate_right_from_north(self):
+        new_orientation = MarsRover(Orientation.NORTH).rotate(Rotation.RIGHT)
+        self.assertEqual(new_orientation, Orientation.EAST)
+    
+    def test_rotate_left_from_west(self):
+        new_orientation = MarsRover(Orientation.WEST).rotate(Rotation.LEFT)
+        self.assertEqual(new_orientation, Orientation.SOUTH)
 
-    def test_west_turn_left(self):
-        self.assertEqual( next_state((1, 2, 'W'), 'L'  ), (1, 2, 'S') )
-
-    def test_south_turn_left(self):
-        self.assertEqual( next_state((1, 2, 'S'), 'L'  ), (1, 2, 'E') )
-
-    def test_east_turn_left(self):
-        self.assertEqual( next_state((1, 2, 'E'), 'L'  ), (1, 2, 'N') )
-        
-    def test_north_turn_right(self):
-        self.assertEqual( next_state((1, 2, 'N'), 'R'  ), (1, 2, 'E') )
-
-    def test_west_turn_right(self):
-        self.assertEqual( next_state((1, 2, 'W'), 'R'  ), (1, 2, 'N') )
-
-    def test_south_turn_right(self):
-        self.assertEqual( next_state((1, 2, 'S'), 'R'  ), (1, 2, 'W') )
-
-    def test_east_turn_right(self):
-        self.assertEqual( next_state((1, 2, 'E'), 'R'  ), (1, 2, 'S') )
-
-    ## mov test
-    def test_move_north(self):
-        self.assertEqual( next_state((1, 2, 'N'), 'M' ) , (1, 3, 'N') )
-
-    def test_margin_north(self):
-        self.assertEqual(
-
-        )
+    def test_rotate_right_from_west(self):
+        new_orientation = MarsRover(Orientation.WEST).rotate(Rotation.RIGHT)
+        self.assertEqual(new_orientation, Orientation.NORTH)
